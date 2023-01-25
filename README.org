@@ -1,0 +1,45 @@
+#+title:Topologia TopoJSON para el mundo y mas alla
+#+author:Niv Sardi <x@btn.sh>
+
+*Abstract* | Este repositorio tiene la topologia argentina extraida de [[https://osm-boundaries.com][osm-boundaries.com]] en formato [[https://github.com/topojson/topojson-specification][TopoJSON]].
+
+* tl;dr
+
+ - go to https://osm-boundaries.com and select a region of your likeing,
+ - download it's JSON dataset
+#+begin_src shell
+npm i
+npx geo2topo /downlodade/osm-boundaries.com.geojson > boundaries.topology
+node breakosmboundaries.js ./boundaries.topology
+#+end_src
+ - profit
+
+* Motivacion
+la exploracion de los datos de [[https://openstreetmap.org][Open Street Map]] (OSM) puede ser tediosa, despues de varios dias leyendo [[https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL][doc de la API overpass]] no logre encontrar queries que me permitan recuperar todos los ='boundaries'= de tipo ='administrative'= que sean relacionados a un cierto nodo (Argentina), que tengan ='admin_levels'= entre 5 y 9.
+
+lo mas cercano que llegue fue este hack, abran issue si tienen mejor solucion,
+
+https://overpass-turbo.eu/s/1qrh
+#+begin_src overpass
+[out:json][timeout:25];
+area[admin_level=5]["name"="Partido de La Plata"][boundary=administrative] -> .boundaryarea;
+rel(area.boundaryarea)[admin_level=8];
+map_to_area -> .bllf;
+rel(pivot.bllf);
+(._;>;);
+out geom;
+#+end_src
+
+* osm-boundaries.com y GeoJSON
+La (excelentisima) pagina osm-boundaries provee datos geograficos extraida de planet.openstreetmap.org ordenados por admin_level. En criollo eso significa que se pueden explorar paises enteros por sus sub-divisiones politicas (en nuestro caso, Provincia, Partido, Municipio, Comuna, Barrio, …).
+
+Sin embargo el GeoJSON que permite bajar es monolitico, en este sentido que es una gigantesca [[https://geojson.org/geojson-spec.html#geometry-collection][GeometryCollection]] de todos los objetos posibles i.e. requiere de procesamiento para volver a poder ver la jerarquia.
+
+Este paquete 'expande' ese GeoJSON en varios archivos mas chicos que distrubuye en disco para ser facilmente buscables:
+#+begin_src shell
+/ data
++ /by-id # cada TopoJSON por ${osm_id}.json
++ /root  # cada TopoJSON por ${parent/name}/topology.json
+#+end_Src
+
+* GeoJSON vs TopoJSON

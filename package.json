@@ -1,0 +1,27 @@
+{
+  "name": "breakosm",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Breakup osm-boundaries.com datasets",
+  "main": "breakosmboundaries.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xaiki/breakosmboundaries.git"
+  },
+  "keywords": [
+    "osm",
+    "boundaries"
+  ],
+  "author": "Niv Sardi <x@btn.sh>",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/xaiki/breakosmboundaries/issues"
+  },
+  "homepage": "https://github.com/xaiki/breakosmboundaries#readme",
+  "devDependencies": {
+    "topojson-client": "^3.1.0"
+  }
+}
